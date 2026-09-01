@@ -146,7 +146,25 @@ architecture, created by Thomas Frumkin. MIT.</p>
     if(!p.ok){$('verdictWord').textContent=p.why;$('verdictWord').className='cracked';return}
     show(p);strike();
   });
-  show(current);
+  // CI links arrive as #v=<base64 of the verdict output> — the fragment never leaves the
+  // browser (no server, no logs). The bell loads pre-armed; the strike stays a human gesture
+  // because browsers rightly refuse autoplay — and a bell you didn't strike didn't ring.
+  const fromHash=()=>{
+    const m=location.hash.match(/#v=(.+)/);
+    if(!m)return false;
+    let text='';
+    try{text=atob(decodeURIComponent(m[1]))}catch{$('verdictWord').textContent='the link carried a mangled verdict — nothing to ring';$('verdictWord').className='cracked';return true}
+    $('verdictIn').value=text;
+    const r=B.readVerdict(text);
+    if(!r.ok){$('verdictWord').textContent=r.why;$('verdictWord').className='cracked';return true}
+    const p=B.pealOf(r);
+    if(!p.ok){$('verdictWord').textContent=p.why;$('verdictWord').className='cracked';return true}
+    show(p);
+    $('verdictWord').textContent='⚑ a CI run sent this verdict — '+p.verdictWord+' · STRIKE to hear it';
+    return true;
+  };
+  if(!fromHash())show(current);
+  window.addEventListener('hashchange',fromHash);
 })();
 </script>
 </body>
