@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>the-bell — the gate you can hear</title>
+<meta name="description" content="Paste a mutation verdict and ring it: a clean gate is a true bell — pure partials, long decay. Surviving mutants crack it — detuned, buzzing, dead in under a second. Test-theatre has a sound.">
+<style>
+:root{
+  --bg:#0e0a06; --ink:#f3e8d8; --muted:#a08a6e; --gold:#d9a441; --gold-2:#f0c069;
+  --card:#171009; --line:#332412; --mono-bg:#1a1209; --bad:#f87171; --good:#4ade80;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,"Iowan Old Style",serif;background-image:radial-gradient(ellipse 70% 45% at 50% -5%, rgba(217,164,65,.09), transparent)}
+.banner{border-bottom:1px solid var(--line);font:600 11.5px/1.4 system-ui;letter-spacing:.18em;text-transform:uppercase;padding:9px 18px;text-align:center;color:var(--gold)}
+main{max-width:70ch;margin:0 auto;padding:34px 18px 60px;text-align:center}
+h1{font:700 2.6rem/1.1 Georgia,serif;margin:.2em 0 .1em;color:var(--gold-2)}
+.kicker{font:600 12px/1.5 system-ui;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.lede{font-size:1.08rem;color:var(--muted);text-align:center;max-width:56ch;margin:0 auto 1em}
+a{color:var(--gold-2)}
+#bellBox{margin:18px auto 6px;width:min(320px,80vw);cursor:pointer;transition:filter .2s}
+#bellBox:hover{filter:brightness(1.15)}
+#bellBox.swing{animation:swing 1.1s ease-in-out}
+@keyframes swing{15%{transform:rotate(6deg)}40%{transform:rotate(-5deg)}65%{transform:rotate(3deg)}85%{transform:rotate(-1.5deg)}}
+#verdictWord{font:600 15px/1.5 system-ui;min-height:1.6em;margin:8px 0 2px}
+#verdictWord.true{color:var(--good)} #verdictWord.cracked{color:var(--bad)}
+textarea{width:100%;min-height:110px;font:12.5px/1.5 ui-monospace,Consolas,monospace;background:var(--mono-bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:left}
+button{font:600 14px system-ui;background:var(--gold);color:var(--bg);border:0;border-radius:10px;padding:10px 18px;cursor:pointer;margin:6px 4px}
+button:hover{background:var(--gold-2)}
+button.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--gold-2);outline-offset:2px}
+.out{font:12.5px/1.65 ui-monospace,Consolas,monospace;background:var(--mono-bg);border-radius:10px;padding:10px 12px;margin-top:10px;overflow-x:auto;min-height:1.4em;white-space:pre-wrap;text-align:left}
+.how{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 20px;margin:1.6em 0;text-align:left;font-size:14.5px}
+footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;font:12px/1.7 system-ui;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="banner">the peal law · witness 29/31 + 2 argued, CLEAN · test-theatre has a sound</div>
+<main>
+<p class="kicker">the-bell · the estate debugs by listening</p>
+<h1>The gate you can hear</h1>
+<p class="lede">Paste a mutation verdict and <strong>strike the bell</strong>. A clean gate rings
+true — the classic bell partials, exactly on ratio, six seconds of honest decay, a peal of three.
+Surviving mutants <em>crack</em> it: every partial pulled off pitch by golden-angle noise, a buzz
+beating against the prime, the ring collapsing to a thud. One strike only — a cracked bell is not
+rung twice.</p>
+
+<svg id="bellBox" viewBox="0 0 200 210" role="button" aria-label="strike the bell" tabindex="0">
+  <g id="bellG" style="transform-origin:100px 18px">
+    <path id="bellBody" d="M100 14 C94 14 90 18 90 24 L90 34 C64 44 48 74 46 118 C45 142 38 154 28 162 L172 162 C162 154 155 142 154 118 C152 74 136 44 110 34 L110 24 C110 18 106 14 100 14 Z"
+      fill="none" stroke="var(--gold)" stroke-width="4" stroke-linejoin="round"/>
+    <circle cx="100" cy="172" r="9" fill="var(--gold)"/>
+    <g id="cracks" stroke="var(--bad)" stroke-width="2.5" fill="none" stroke-linecap="round"></g>
+  </g>
+  <text x="100" y="204" text-anchor="middle" style="font:600 11px system-ui;fill:var(--muted)">strike</text>
+</svg>
+<div id="verdictWord">paste a verdict below, or ring the presets</div>
+
+<div>
+<button id="cleanBtn">ring a CLEAN gate</button>
+<button id="crackBtn" class="ghost">ring a CRACKED one</button>
+</div>
+
+<textarea id="verdictIn" spellcheck="false" placeholder='paste witness output here — e.g.
+{"total": 39, "killed": 39, "survived": [], "clean": true}'></textarea>
+<div><button id="ringBtn">read the verdict → ring it</button></div>
+<div class="out" id="recipeOut">the recipe will print here — the sound is just its mouth</div>
+
+<div class="how">
+<p><strong>How it works:</strong> the kernel in this page (mutation-gated, 29/31 + 2 argued
+equivalents) reads the verdict from the <em>whole</em> output and derives a deterministic sound
+recipe — same verdict, same bell, always. The partials are a real church bell's voice (hum, prime,
+minor-third tierce, quint, nominal); the crack is <code>survived/total</code>, and it detunes
+every partial, dims every voice, shortens the decay, and adds the beat you'll hear as a buzz.
+Nothing here is a sound effect — <strong>the flaw is the audio</strong>.</p>
+<p>Why: the estate holds that a correlated fault is audible while every metric reads green. This
+is that law as an object — CI you could pipe to a real bell in the hallway. A team that
+<em>hears</em> its gate stops reading dashboards.</p>
+</div>
+
+<footer>
+<p>Kin: <a href="https://github.com/sjgant80-hub/the-ear">the-ear</a> ·
+<a href="https://github.com/sjgant80-hub/the-throat">the-throat</a> ·
+<a href="https://sjgant80-hub.github.io/witness-kit/">witness-kit</a>. Built on the Konomi
+architecture, created by Thomas Frumkin. MIT.</p>
+</footer>
+</main>
+<script>
+/*__KERNEL_START__*/
+// the-bell · bell.mjs — THE PEAL LAW: the gate you can hear.
+//
+// The estate debugs by listening (the-ear: a correlated fault is audible while every metric
+// is green). This organ turns that law into an object anyone can hold: a mutation verdict
+// becomes a BELL. A clean gate rings TRUE — pure harmonic partials, long decay, a full peal.
+// Surviving mutants CRACK it — partials detuned by golden-angle noise, decay collapsing to a
+// thud, the peal cut short. Test-theatre has a sound, and it is not a pleasant one.
+//
+//   · READ  — a witness verdict parsed from the WHOLE output (the last balanced JSON object
+//             carrying "clean" — judging by the last line once mis-read "}" as a verdict).
+//   · PEAL  — verdict → a deterministic sound recipe: same verdict, same bell, always.
+//             The recipe is pure data; the page's speaker is just the mouth.
+//
+// The bell ratios are the classic minor-third church bell partials (hum, prime, tierce,
+// quint, nominal, deciem, double octave) — a real bell's voice, not an synth guess.
+//
+// Pure and total: garbage in → { ok:false, why }, never a throw mid-ring.
+
+const GOLDEN_TURN = 1 - 1 / ((1 + Math.sqrt(5)) / 2);   // ≈ 0.381966…
+const PARTIALS = [
+  { name: 'hum',     ratio: 0.5,  gain: 0.6 },
+  { name: 'prime',   ratio: 1.0,  gain: 1.0 },
+  { name: 'tierce',  ratio: 1.2,  gain: 0.8 },
+  { name: 'quint',   ratio: 1.5,  gain: 0.5 },
+  { name: 'nominal', ratio: 2.0,  gain: 0.7 },
+  { name: 'deciem',  ratio: 2.67, gain: 0.35 },
+  { name: 'double',  ratio: 4.0,  gain: 0.2 },
+];
+
+const S = (v) => (typeof v === 'string' ? v : '');
+const round3 = (x) => Math.round(x * 1000) / 1000;
+
+/** READ — vendored from witness-kit's verdict law (same author, same argument): the verdict
+ *  is the LAST balanced JSON object carrying a "clean" key; prose never fools it. */
+function readVerdict(output) {
+  if (!S(output)) return { ok: false, why: 'nothing to ring — paste a witness verdict' };
+  const at = output.lastIndexOf('"clean"');
+  if (at < 0) return { ok: false, why: 'no verdict in this text — the bell rings gates, not prose' };
+  let start = output.lastIndexOf('{', at);
+  while (start >= 0) {
+    let depth = 0, end = -1;
+    for (let i = start; i < output.length; i++) {
+      const c = output[i];
+      if (c === '{') depth++;
+      else if (c === '}') { depth--; if (depth === 0) { end = i; break; } }
+    }
+    if (end > at) {
+      try {
+        const o = JSON.parse(output.slice(start, end + 1));
+        if (typeof o.clean === 'boolean') {
+          const total = Number.isInteger(o.total) ? o.total : null;
+          const killed = Number.isInteger(o.killed) ? o.killed : null;
+          const survived = Array.isArray(o.survived) ? o.survived.length : (o.clean ? 0 : null);
+          if (total === null || killed === null || survived === null)
+            return { ok: false, why: 'a verdict without counts cannot be weighed — total, killed and survived are the bell metal' };
+          return { ok: true, clean: o.clean, total, killed, survived };
+        }
+      } catch { /* widen and retry */ }
+    }
+    start = output.lastIndexOf('{', start - 1);
+  }
+  return { ok: false, why: 'a "clean" key with no balanced verdict around it — mangled output rings nothing' };
+}
+
+/**
+ * PEAL — the verdict as a bell. Deterministic recipe:
+ *   · fundamental 220 Hz (a church bell's honest register)
+ *   · CLEAN: the partials exactly on ratio, decay 6s, strikes = 3 (a true peal)
+ *   · CRACKED: each partial detuned by golden-angle noise scaled by the survival rate —
+ *     crack = survived/total; detune_i = (frac(i·φturn) − 0.5) · crack · 0.24 of the ratio.
+ *     Decay collapses toward a thud (6s → 0.8s as crack → 1); one strike only — a cracked
+ *     bell is not rung twice; and a BUZZ partial appears at 1.03·prime, louder with crack.
+ *   · verdictWord: what the listener should hear, said in words too.
+ */
+function pealOf(verdict) {
+  const v = verdict && typeof verdict === 'object' && !Array.isArray(verdict) ? verdict : null;
+  if (!v) return { ok: false, why: 'pass readVerdict() output' };
+  for (const k of ['clean', 'total', 'killed', 'survived'])
+    if (!(k in v)) return { ok: false, why: 'verdict missing ' + k };
+  if (typeof v.clean !== 'boolean' || !Number.isInteger(v.total) || !Number.isInteger(v.killed) || !Number.isInteger(v.survived))
+    return { ok: false, why: 'a verdict is { clean, total, killed, survived } with honest types' };
+  if (v.total < 1) return { ok: false, why: 'zero mutants is not a gate — a bell needs metal to ring' };
+  if (v.killed + v.survived > v.total) return { ok: false, why: 'killed + survived exceeds total — this verdict is broken, not cracked' };
+  if (v.clean && v.survived > 0) return { ok: false, why: 'clean with survivors is a contradiction — one of them is lying' };
+  const crack = round3(v.survived / v.total);
+  const partials = PARTIALS.map((p, i) => {
+    const noise = ((i * GOLDEN_TURN) % 1) - 0.5;
+    return {
+      name: p.name,
+      ratio: round3(p.ratio * (1 + noise * crack * 0.24)),
+      gain: round3(p.gain * (1 - crack * 0.3)),
+    };
+  });
+  if (crack > 0) partials.push({ name: 'buzz', ratio: 1.03, gain: round3(0.15 + crack * 0.5) });
+  const decay = round3(6 - crack * 5.2);
+  const strikes = crack === 0 ? 3 : 1;
+  const verdictWord = crack === 0
+    ? 'TRUE — ' + v.killed + ' of ' + v.total + ' mutants dead; the bell rings clean and long'
+    : 'CRACKED — ' + v.survived + ' survivor(s) in ' + v.total + '; hear the buzz? that is test-theatre, ringing';
+  return { ok: true, fundamental: 220, partials, decay, strikes, crack, verdictWord };
+}
+
+window.BELL = { GOLDEN_TURN, PARTIALS, readVerdict, pealOf };
+/*__KERNEL_END__*/
+(function(){
+  const B=window.BELL;
+  let AC=null, current=B.pealOf({clean:true,total:39,killed:39,survived:0});
+  const $=(id)=>document.getElementById(id);
+
+  function drawCracks(crack){
+    const g=$('cracks');g.innerHTML='';
+    const n=Math.ceil(crack*5);
+    for(let i=0;i<n;i++){
+      const t=((i+1)*B.GOLDEN_TURN)%1;
+      let x=60+t*80, y=155, d='M'+x.toFixed(0)+' '+y;
+      for(let s=0;s<5;s++){
+        y-=18+((t*7+s*3)%9); x+=(((i*3+s*5)%7)-3)*4;
+        d+=' L'+x.toFixed(0)+' '+y.toFixed(0);
+      }
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d',d);g.appendChild(p);
+    }
+  }
+  function show(peal){
+    current=peal;
+    const w=$('verdictWord');
+    w.textContent=peal.verdictWord;
+    w.className=peal.crack===0?'true':'cracked';
+    drawCracks(peal.crack);
+    $('recipeOut').textContent='fundamental '+peal.fundamental+' Hz · decay '+peal.decay+'s · strikes '+peal.strikes+' · crack '+peal.crack+'\n'+
+      peal.partials.map(p=>'  '+p.name.padEnd(8)+'ratio '+String(p.ratio).padEnd(6)+' gain '+p.gain).join('\n');
+  }
+  function strike(){
+    if(!current)return;
+    if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+    const bell=$('bellBox');
+    bell.classList.remove('swing');void bell.offsetWidth;bell.classList.add('swing');
+    const t0=AC.currentTime+0.03;
+    for(let s=0;s<current.strikes;s++){
+      const ts=t0+s*1.0;
+      for(const p of current.partials){
+        const o=AC.createOscillator(), g=AC.createGain();
+        o.type='sine';o.frequency.value=current.fundamental*p.ratio;
+        g.gain.setValueAtTime(0.0001,ts);
+        g.gain.exponentialRampToValueAtTime(p.gain*0.14,ts+0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001,ts+current.decay*(0.6+0.4*(1/p.ratio)));
+        o.connect(g).connect(AC.destination);
+        o.start(ts);o.stop(ts+current.decay+0.2);
+      }
+    }
+  }
+  $('bellBox').addEventListener('click',strike);
+  $('bellBox').addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();strike()}});
+  $('cleanBtn').addEventListener('click',()=>{show(B.pealOf({clean:true,total:39,killed:39,survived:0}));strike()});
+  $('crackBtn').addEventListener('click',()=>{show(B.pealOf({clean:false,total:10,killed:7,survived:3}));strike()});
+  $('ringBtn').addEventListener('click',()=>{
+    const r=B.readVerdict($('verdictIn').value);
+    if(!r.ok){$('verdictWord').textContent=r.why;$('verdictWord').className='cracked';$('recipeOut').textContent='—';return}
+    const p=B.pealOf(r);
+    if(!p.ok){$('verdictWord').textContent=p.why;$('verdictWord').className='cracked';return}
+    show(p);strike();
+  });
+  show(current);
+})();
+</script>
+</body>
+</html>

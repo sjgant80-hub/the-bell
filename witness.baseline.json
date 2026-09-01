@@ -1,0 +1,14 @@
+[
+  {
+    "line": 47,
+    "mutation": "> → >=",
+    "snippet": "if (end > at) {",
+    "reason": "equivalent by type: end indexes a closing brace and at indexes the opening quote of \"clean\" — one index cannot hold both characters, so > and >= agree on every real string"
+  },
+  {
+    "line": 42,
+    "mutation": "< → <=",
+    "snippet": "for (let i = start; i < output.length; i++) {",
+    "reason": "equivalent: the loop bound reads one index past the string end, where indexing yields undefined — undefined matches neither brace, so the extra iteration observes nothing"
+  }
+]
